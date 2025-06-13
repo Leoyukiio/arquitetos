@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - Sistema de Arquitetos</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="dashboard">
+      <header>
+        <h1>Sistema de Arquitetos</h1>
+        <button class="btn-primary" id="addArquitetoBtn">
+          Adicionar Arquiteto
+        </button>
+      </header>
+
+      <div class="search-container">
+        <input
+          type="text"
+          id="searchInput"
+          class="search-global"
+          placeholder="Buscar arquitetos..."
+        />
+      </div>
+
+      <div class="arquitetos-grid" id="arquitetosGrid">
+        <!-- Os cards serão inseridos aqui via JavaScript -->
+      </div>
+    </div>
+
+    <!-- Modal para adicionar/editar arquiteto -->
+    <div id="arquitetoModal" class="modal">
+      <div class="modal-content">
+        <h2 id="modalTitle">Adicionar Arquiteto</h2>
+        <form id="arquitetoForm">
+          <div class="input-group">
+            <label for="nome">Nome</label>
+            <input type="text" id="nome" required />
+          </div>
+          <div class="input-group">
+            <label>Data de Nascimento</label>
+            <div class="date-input-container">
+              <div class="input-group" style="flex: 1">
+                <input
+                  type="number"
+                  id="dia"
+                  min="1"
+                  max="31"
+                  placeholder="Dia"
+                  required
+                />
+              </div>
+              <div class="input-group" style="flex: 2">
+                <select id="mes" required>
+                  <option value="">Mês</option>
+                  <option value="1">Janeiro</option>
+                  <option value="2">Fevereiro</option>
+                  <option value="3">Março</option>
+                  <option value="4">Abril</option>
+                  <option value="5">Maio</option>
+                  <option value="6">Junho</option>
+                  <option value="7">Julho</option>
+                  <option value="8">Agosto</option>
+                  <option value="9">Setembro</option>
+                  <option value="10">Outubro</option>
+                  <option value="11">Novembro</option>
+                  <option value="12">Dezembro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="input-group">
+            <label for="contato">E-mail ou Telefone</label>
+            <input type="text" id="contato" required />
+          </div>
+          <div class="input-group">
+            <label for="escritorio">Escritório</label>
+            <input type="text" id="escritorio" required />
+          </div>
+          <div class="input-group">
+            <label for="observacao">Observação</label>
+            <textarea id="observacao" rows="3"></textarea>
+          </div>
+          <div class="modal-buttons">
+            <button type="button" class="btn-secondary" id="cancelBtn">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module">
+      import { auth, db } from "./firebase-config.js";
+      import {
+        collection,
+        addDoc,
+        getDocs,
+        updateDoc,
+        deleteDoc,
+        doc,
+      } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+      import {
+        onAuthStateChanged,
+        signOut,
+      } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+      // Verificar autenticação
+      onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          window.location.replace("index.html");
+        }
+      });
+
+      // Elementos do DOM
+      const arquitetosGrid = document.getElementById("arquitetosGrid");
+      const searchInput = document.getElementById("searchInput");
+      const addArquitetoBtn = document.getElementById("addArquitetoBtn");
+      const arquitetoModal = document.getElementById("arquitetoModal");
+      const arquitetoForm = document.getElementById("arquitetoForm");
+      const cancelBtn = document.getElementById("cancelBtn");
+      const modalTitle = document.getElementById("modalTitle");
+
+      let arquitetos = [];
+      let editingArquitetoId = null;
+
+      // Função para criar card de arquiteto
+      function createArquitetoCard(arquiteto) {
+        const card = document.createElement("div");
+        card.className = "arquiteto-card";
+        card.innerHTML = `
+          <div class="card-header">
+            <div>
+              <h3 class="card-title">${arquiteto.nome}</h3>
+              <p class="card-escritorio">${arquiteto.escritorio}</p>
+            </div>
+          </div>
+          <div class="card-details">
+            <div class="card-info">
+              <div class="info-item">
+                <span class="info-label">Nascimento</span>
+                <span class="info-value">${arquiteto.dia}/${
+          arquiteto.mes
+        }</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Contato</span>
+                <span class="info-value">${arquiteto.contato}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Escritório</span>
+                <span class="info-value">${arquiteto.escritorio}</span>
+              </div>
+              ${
+                arquiteto.observacao
+                  ? `
+              <div class="info-item">
+                <span class="info-label">Observação</span>
+                <span class="info-value">${arquiteto.observacao}</span>
+              </div>
+              `
+                  : ""
+              }
+            </div>
+            <div class="card-actions">
+              <button class="btn-primary edit-btn" data-id="${
+                arquiteto.id
+              }">Editar</button>
+              <button class="btn-secondary delete-btn" data-id="${
+                arquiteto.id
+              }">Excluir</button>
+            </div>
+          </div>
+        `;
+
+        // Adicionar evento de clique para expandir/recolher
+        card.addEventListener("click", (e) => {
+          if (
+            !e.target.classList.contains("edit-btn") &&
+            !e.target.classList.contains("delete-btn")
+          ) {
+            card.classList.toggle("expanded");
+          }
+        });
+
+        // Adicionar eventos para os botões
+        card.querySelector(".edit-btn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          editArquiteto(arquiteto);
+        });
+
+        card.querySelector(".delete-btn").addEventListener("click", (e) => {
+          e.stopPropagation();
+          deleteArquiteto(arquiteto.id);
+        });
+
+        return card;
+      }
+
+      // Função para carregar arquitetos
+      async function loadArquitetos() {
+        const querySnapshot = await getDocs(collection(db, "arquitetos"));
+        arquitetos = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        renderArquitetos();
+      }
+
+      // Função para renderizar arquitetos
+      function renderArquitetos(filteredArquitetos = arquitetos) {
+        arquitetosGrid.innerHTML = "";
+        filteredArquitetos.forEach((arquiteto) => {
+          arquitetosGrid.appendChild(createArquitetoCard(arquiteto));
+        });
+      }
+
+      // Função para adicionar arquiteto
+      async function addArquiteto(arquiteto) {
+        await addDoc(collection(db, "arquitetos"), arquiteto);
+        await loadArquitetos();
+      }
+
+      // Função para editar arquiteto
+      async function editArquiteto(arquiteto) {
+        editingArquitetoId = arquiteto.id;
+        modalTitle.textContent = "Editar Arquiteto";
+
+        document.getElementById("nome").value = arquiteto.nome;
+        document.getElementById("dia").value = arquiteto.dia;
+        document.getElementById("mes").value = arquiteto.mes;
+        document.getElementById("contato").value = arquiteto.contato;
+        document.getElementById("escritorio").value = arquiteto.escritorio;
+        document.getElementById("observacao").value =
+          arquiteto.observacao || "";
+
+        arquitetoModal.style.display = "block";
+      }
+
+      // Função para atualizar arquiteto
+      async function updateArquiteto(id, arquiteto) {
+        await updateDoc(doc(db, "arquitetos", id), arquiteto);
+        await loadArquitetos();
+      }
+
+      // Função para excluir arquiteto
+      async function deleteArquiteto(id) {
+        if (confirm("Tem certeza que deseja excluir este arquiteto?")) {
+          await deleteDoc(doc(db, "arquitetos", id));
+          await loadArquitetos();
+        }
+      }
+
+      // Event Listeners
+      addArquitetoBtn.addEventListener("click", () => {
+        editingArquitetoId = null;
+        modalTitle.textContent = "Adicionar Arquiteto";
+        arquitetoForm.reset();
+        arquitetoModal.style.display = "block";
+      });
+
+      cancelBtn.addEventListener("click", () => {
+        arquitetoModal.style.display = "none";
+      });
+
+      arquitetoForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const arquiteto = {
+          nome: document.getElementById("nome").value,
+          dia: document.getElementById("dia").value,
+          mes: document.getElementById("mes").value,
+          contato: document.getElementById("contato").value,
+          escritorio: document.getElementById("escritorio").value,
+          observacao: document.getElementById("observacao").value,
+        };
+
+        if (editingArquitetoId) {
+          await updateArquiteto(editingArquitetoId, arquiteto);
+        } else {
+          await addArquiteto(arquiteto);
+        }
+
+        arquitetoModal.style.display = "none";
+      });
+
+      searchInput.addEventListener("input", (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filteredArquitetos = arquitetos.filter(
+          (arquiteto) =>
+            arquiteto.nome.toLowerCase().includes(searchTerm) ||
+            arquiteto.escritorio.toLowerCase().includes(searchTerm) ||
+            arquiteto.contato.toLowerCase().includes(searchTerm)
+        );
+        renderArquitetos(filteredArquitetos);
+      });
+
+      // Carregar arquitetos ao iniciar
+      loadArquitetos();
+    </script>
+  </body>
+</html>

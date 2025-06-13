@@ -1,0 +1,71 @@
+<!-- index.html - Tela de login -->
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Arquitetos</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="login-page">
+      <div class="login-container">
+        <div class="login-header">
+          <h1>Arquitetos</h1>
+          <p>Gerencie seus arquitetos e escritórios</p>
+        </div>
+        <form id="loginForm" class="login-form">
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" placeholder="Seu email" required />
+          </div>
+          <div class="input-group">
+            <label for="password">Senha</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Sua senha"
+              required
+            />
+          </div>
+          <button type="submit" id="loginBtn" class="btn-primary">
+            Entrar
+          </button>
+          <p id="loginError" class="error"></p>
+        </form>
+      </div>
+    </div>
+
+    <script type="module">
+      import { auth } from "./firebase-config.js";
+      import { signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const loginBtn = document.getElementById("loginBtn");
+          const errorDiv = document.getElementById("loginError");
+
+          try {
+            loginBtn.disabled = true;
+            loginBtn.textContent = "Entrando...";
+            const userCredential = await signInWithEmailAndPassword(
+              auth,
+              email,
+              password
+            );
+            if (userCredential.user) {
+              window.location.replace("dashboard.html");
+            }
+          } catch (error) {
+            errorDiv.textContent = "Erro ao fazer login: " + error.message;
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Entrar";
+          }
+        });
+    </script>
+  </body>
+</html>

@@ -79,6 +79,10 @@
             <input type="text" id="escritorio" required />
           </div>
           <div class="input-group">
+            <label for="cargo">Cargo</label>
+            <input type="text" id="cargo" required />
+          </div>
+          <div class="input-group">
             <label for="observacao">Observação</label>
             <textarea id="observacao" rows="3"></textarea>
           </div>
@@ -124,7 +128,24 @@
       const modalTitle = document.getElementById("modalTitle");
 
       let arquitetos = [];
+      let arquitetosAgrupados = {};
       let editingArquitetoId = null;
+
+      // Definir a ordem de prioridade dos cargos
+      const cargoOrder = [
+        "Chefe",
+        "Gerente",
+        "Coordenador",
+        "Arquiteto Pleno",
+        "Arquiteto Júnior",
+        "Estagiário",
+      ];
+
+      // Função auxiliar para obter o índice de um cargo na ordem
+      function getCargoOrderIndex(cargo) {
+        const index = cargoOrder.indexOf(cargo);
+        return index === -1 ? Infinity : index; // Se o cargo não estiver na lista, ele vai para o final
+      }
 
       // Função para criar card de arquiteto
       function createArquitetoCard(arquiteto) {
@@ -135,6 +156,7 @@
             <div>
               <h3 class="card-title">${arquiteto.nome}</h3>
               <p class="card-escritorio">${arquiteto.escritorio}</p>
+              <p class="card-cargo">${arquiteto.cargo || "N/A"}</p>
             </div>
           </div>
           <div class="card-details">
@@ -206,14 +228,76 @@
           id: doc.id,
           ...doc.data(),
         }));
+
+        // Agrupar arquitetos por escritório
+        arquitetosAgrupados = arquitetos.reduce((acc, arquiteto) => {
+          const escritorio = arquiteto.escritorio || "Sem Escritório";
+          if (!acc[escritorio]) {
+            acc[escritorio] = [];
+          }
+          acc[escritorio].push(arquiteto);
+          return acc;
+        }, {});
+
         renderArquitetos();
       }
 
       // Função para renderizar arquitetos
       function renderArquitetos(filteredArquitetos = arquitetos) {
         arquitetosGrid.innerHTML = "";
-        filteredArquitetos.forEach((arquiteto) => {
-          arquitetosGrid.appendChild(createArquitetoCard(arquiteto));
+
+        let dataToRender;
+
+        // Se filteredArquitetos for diferente de 'arquitetos' (ou seja, se for uma busca), reagrupar
+        if (filteredArquitetos !== arquitetos) {
+          dataToRender = filteredArquitetos.reduce((acc, arquiteto) => {
+            const escritorio = arquiteto.escritorio || "Sem Escritório";
+            if (!acc[escritorio]) {
+              acc[escritorio] = [];
+            }
+            acc[escritorio].push(arquiteto);
+            return acc;
+          }, {});
+        } else {
+          // Se não for uma busca, usar os arquitetos já agrupados
+          dataToRender = arquitetosAgrupados;
+        }
+
+        // Ordenar os escritórios por nome (opcional, mas bom para organização)
+        const sortedEscritorios = Object.keys(dataToRender).sort();
+
+        sortedEscritorios.forEach((escritorio) => {
+          const escritorioGroup = document.createElement("div");
+          escritorioGroup.className = "escritorio-group";
+
+          // Criar um cabeçalho para o escritório
+          const escritorioHeader = document.createElement("div");
+          escritorioHeader.className = "escritorio-group-header";
+          escritorioHeader.innerHTML = `<h2>${escritorio}</h2>`;
+
+          escritorioGroup.appendChild(escritorioHeader);
+
+          const arquitetoCardsContainer = document.createElement("div");
+          arquitetoCardsContainer.className = "arquiteto-cards-container";
+
+          // Ordenar arquitetos dentro do grupo por cargo
+          dataToRender[escritorio].sort((a, b) => {
+            const orderA = getCargoOrderIndex(a.cargo);
+            const orderB = getCargoOrderIndex(b.cargo);
+
+            if (orderA === orderB) {
+              return a.nome.localeCompare(b.nome); // Se os cargos forem iguais, ordenar por nome
+            }
+            return orderA - orderB;
+          });
+
+          // Renderizar os arquitetos desse escritório
+          dataToRender[escritorio].forEach((arquiteto) => {
+            arquitetoCardsContainer.appendChild(createArquitetoCard(arquiteto));
+          });
+
+          escritorioGroup.appendChild(arquitetoCardsContainer);
+          arquitetosGrid.appendChild(escritorioGroup);
         });
       }
 
@@ -233,6 +317,7 @@
         document.getElementById("mes").value = arquiteto.mes;
         document.getElementById("contato").value = arquiteto.contato;
         document.getElementById("escritorio").value = arquiteto.escritorio;
+        document.getElementById("cargo").value = arquiteto.cargo || "";
         document.getElementById("observacao").value =
           arquiteto.observacao || "";
 
@@ -273,6 +358,7 @@
           mes: document.getElementById("mes").value,
           contato: document.getElementById("contato").value,
           escritorio: document.getElementById("escritorio").value,
+          cargo: document.getElementById("cargo").value,
           observacao: document.getElementById("observacao").value,
         };
 
@@ -291,7 +377,8 @@
           (arquiteto) =>
             arquiteto.nome.toLowerCase().includes(searchTerm) ||
             arquiteto.escritorio.toLowerCase().includes(searchTerm) ||
-            arquiteto.contato.toLowerCase().includes(searchTerm)
+            arquiteto.contato.toLowerCase().includes(searchTerm) ||
+            arquiteto.cargo.toLowerCase().includes(searchTerm)
         );
         renderArquitetos(filteredArquitetos);
       });

@@ -9,8 +9,6 @@ body {
   background-color: #f5f5f5;
   min-height: 100vh;
   display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 /* Estilos da página de login */
@@ -89,12 +87,13 @@ body {
 
 /* Estilos do Dashboard */
 .dashboard {
-  max-width: 1200px;
+  max-width: 90vw;
   margin: 0 auto;
   background: white;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
 header {
@@ -276,10 +275,6 @@ tr:not(.escritorio-header):hover {
   margin: 0;
 }
 
-.date-input-container input[type="number"] {
-  -moz-appearance: textfield;
-}
-
 /* Modal */
 .modal {
   display: none;
@@ -341,10 +336,40 @@ tr:not(.escritorio-header):hover {
 
 /* Estilos para os cards do dashboard */
 .arquitetos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  padding: 20px;
+}
+
+.escritorio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.arquiteto-cards-container {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 25px;
-  padding: 20px;
+}
+
+.escritorio-group-header {
+  grid-column: auto;
+  background-color: #e0e0e0;
+  padding: 15px 20px;
+  margin-top: 0;
+  margin-bottom: 0;
+  border-radius: 8px;
+  font-size: 1.2em;
+  color: #333;
+  font-weight: bold;
+}
+
+.escritorio-group-header h2 {
+  margin: 0;
+  font-size: inherit;
+  color: inherit;
 }
 
 .arquiteto-card {
@@ -382,6 +407,12 @@ tr:not(.escritorio-header):hover {
   font-size: 16px;
   color: #666;
   margin-bottom: 10px;
+}
+
+.card-cargo {
+  font-size: 14px;
+  color: #777;
+  margin-bottom: 5px;
 }
 
 .card-info {
@@ -515,6 +546,11 @@ tr:not(.escritorio-header):hover {
   .arquitetos-grid {
     grid-template-columns: 1fr;
     padding: 10px;
+    gap: 20px;
+  }
+
+  .arquiteto-cards-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
   }
 

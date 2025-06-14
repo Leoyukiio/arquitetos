@@ -10,87 +10,218 @@
     <div class="dashboard">
       <header>
         <h1>Sistema de Arquitetos</h1>
-        <button class="btn-primary" id="addArquitetoBtn">
-          Adicionar Arquiteto
-        </button>
+        <div class="header-buttons">
+          <button type="button" class="btn-secondary" id="addEscritorioBtn">
+            Adicionar Escritório
+          </button>
+          <button type="button" class="btn-primary" id="addArquitetoBtn">
+            Adicionar
+          </button>
+        </div>
       </header>
 
-      <div class="search-container">
-        <input
-          type="text"
-          id="searchInput"
-          class="search-global"
-          placeholder="Buscar arquitetos..."
-        />
-      </div>
+      <nav class="tabs-navigation">
+        <button class="tab-btn active" data-tab="arquitetos">Arquitetos</button>
+        <button class="tab-btn" data-tab="indicadores">Indicadores</button>
+        <button class="tab-btn" data-tab="geral">Geral</button>
+      </nav>
 
-      <div class="arquitetos-grid" id="arquitetosGrid">
-        <!-- Os cards serão inseridos aqui via JavaScript -->
+      <div class="tab-content">
+        <div class="tab-pane active" id="arquitetos-tab">
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchInput"
+              class="search-global"
+              placeholder="Buscar arquitetos..."
+            />
+          </div>
+          <div id="arquitetosContent">
+            <h2>Arquitetos</h2>
+            <div class="arquitetos-grid" id="arquitetosGrid">
+              <!-- Os cards serão inseridos aqui via JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" id="indicadores-tab">
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchIndicadoresInput"
+              class="search-global"
+              placeholder="Buscar indicadores..."
+            />
+          </div>
+          <div id="indicadoresContent">
+            <h2>Indicadores</h2>
+            <!-- Conteúdo dos indicadores será adicionado aqui -->
+          </div>
+        </div>
+
+        <div class="tab-pane" id="geral-tab">
+          <div class="search-container">
+            <input
+              type="text"
+              id="searchGeralInput"
+              class="search-global"
+              placeholder="Buscar informações gerais..."
+            />
+          </div>
+          <div id="geralContent">
+            <h2>Visão Geral</h2>
+            <!-- Conteúdo geral será adicionado aqui -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal para adicionar escritório -->
+    <div id="escritorioModal" class="modal">
+      <div class="modal-content">
+        <h2 id="modalEscritorioTitle">Adicionar Escritório</h2>
+        <form id="escritorioForm">
+          <div class="input-group">
+            <label for="nomeEscritorio">Nome do Escritório</label>
+            <input type="text" id="nomeEscritorio" required />
+          </div>
+
+          <div class="input-group">
+            <label for="nomeFantasiaEscritorio">Nome Fantasia</label>
+            <input type="text" id="nomeFantasiaEscritorio" required />
+          </div>
+
+          <div class="input-group">
+            <label for="cnpjEscritorio">CNPJ</label>
+            <input type="text" id="cnpjEscritorio" required />
+          </div>
+
+          <div class="input-group">
+            <label for="cepEscritorio">CEP</label>
+            <div class="cep-container">
+              <input type="text" id="cepEscritorio" required maxlength="9" placeholder="00000-000" />
+              <button type="button" class="btn-secondary" id="buscarCepEscritorio">Buscar</button>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="enderecoEscritorio">Endereço</label>
+            <input type="text" id="enderecoEscritorio" required readonly />
+          </div>
+
+          <div class="input-group">
+            <label for="numeroEscritorio">Número</label>
+            <input type="text" id="numeroEscritorio" required />
+          </div>
+
+          <div class="input-group">
+            <label for="complementoEscritorio">Complemento</label>
+            <input type="text" id="complementoEscritorio" />
+          </div>
+
+          <div class="input-group">
+            <label for="bairroEscritorio">Bairro</label>
+            <input type="text" id="bairroEscritorio" required readonly />
+          </div>
+
+          <div class="input-group">
+            <label for="cidadeEscritorio">Cidade</label>
+            <input type="text" id="cidadeEscritorio" required readonly />
+          </div>
+
+          <div class="input-group">
+            <label for="estadoEscritorio">Estado</label>
+            <input type="text" id="estadoEscritorio" required readonly />
+          </div>
+
+          <div class="input-group">
+            <label for="telefoneEscritorio">Telefone</label>
+            <input type="tel" id="telefoneEscritorio" required />
+          </div>
+
+          <div class="input-group">
+            <label for="emailEscritorio">E-mail</label>
+            <input type="email" id="emailEscritorio" required />
+          </div>
+
+          <div class="modal-buttons">
+            <button type="button" class="btn-secondary" id="cancelEscritorioBtn">
+              Cancelar
+            </button>
+            <button type="submit" class="btn-primary" id="submitEscritorioBtn">
+              Salvar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
 
     <!-- Modal para adicionar/editar arquiteto -->
     <div id="arquitetoModal" class="modal">
       <div class="modal-content">
-        <h2 id="modalTitle">Adicionar Arquiteto</h2>
+        <h2 id="modalTitle">Adicionar</h2>
         <form id="arquitetoForm">
           <div class="input-group">
-            <label for="nome">Nome</label>
-            <input type="text" id="nome" required />
-          </div>
-          <div class="input-group">
-            <label>Data de Nascimento</label>
-            <div class="date-input-container">
-              <div class="input-group" style="flex: 1">
-                <input
-                  type="number"
-                  id="dia"
-                  min="1"
-                  max="31"
-                  placeholder="Dia"
-                  required
-                />
-              </div>
-              <div class="input-group" style="flex: 2">
-                <select id="mes" required>
-                  <option value="">Mês</option>
-                  <option value="1">Janeiro</option>
-                  <option value="2">Fevereiro</option>
-                  <option value="3">Março</option>
-                  <option value="4">Abril</option>
-                  <option value="5">Maio</option>
-                  <option value="6">Junho</option>
-                  <option value="7">Julho</option>
-                  <option value="8">Agosto</option>
-                  <option value="9">Setembro</option>
-                  <option value="10">Outubro</option>
-                  <option value="11">Novembro</option>
-                  <option value="12">Dezembro</option>
-                </select>
-              </div>
+            <label for="escritorioSelect">Escritório</label>
+            <div class="select-with-search">
+              <input 
+                type="text" 
+                id="escritorioSearch" 
+                placeholder="Buscar escritório..."
+                class="search-global"
+              />
+              <select id="escritorioSelect" required size="5">
+                <option value="">Selecione um escritório...</option>
+              </select>
             </div>
           </div>
+
           <div class="input-group">
-            <label for="contato">E-mail ou Telefone</label>
-            <input type="text" id="contato" required />
+            <label>Tipo de Pessoa</label>
+            <div class="radio-group">
+              <label>
+                <input type="radio" name="tipo" value="arquiteto" required>
+                Arquiteto
+              </label>
+              <label>
+                <input type="radio" name="tipo" value="indicador" required>
+                Indicador
+              </label>
+            </div>
           </div>
+
           <div class="input-group">
-            <label for="escritorio">Escritório</label>
-            <input type="text" id="escritorio" required />
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" required />
           </div>
+
           <div class="input-group">
-            <label for="cargo">Cargo</label>
-            <input type="text" id="cargo" required />
+            <label for="documento">CPF</label>
+            <input type="text" id="documento" required />
           </div>
+
           <div class="input-group">
-            <label for="observacao">Observação</label>
-            <textarea id="observacao" rows="3"></textarea>
+            <label for="telefone">Telefone</label>
+            <input type="tel" id="telefone" required />
           </div>
+
+          <div class="input-group">
+            <label for="celular">Celular</label>
+            <input type="tel" id="celular" required />
+          </div>
+
+          <div class="input-group">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" required />
+          </div>
+
           <div class="modal-buttons">
             <button type="button" class="btn-secondary" id="cancelBtn">
               Cancelar
             </button>
-            <button type="submit" class="btn-primary">Salvar</button>
+            <button type="submit" class="btn-primary" id="submitArquitetoBtn">
+              Salvar
+            </button>
           </div>
         </form>
       </div>
@@ -118,108 +249,400 @@
         }
       });
 
+      // Navegação por abas
+      const tabButtons = document.querySelectorAll('.tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          // Remove active class from all buttons and panes
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabPanes.forEach(pane => pane.classList.remove('active'));
+
+          // Add active class to clicked button and corresponding pane
+          button.classList.add('active');
+          const tabId = button.getAttribute('data-tab');
+          document.getElementById(`${tabId}-tab`).classList.add('active');
+        });
+      });
+
       // Elementos do DOM
       const arquitetosGrid = document.getElementById("arquitetosGrid");
       const searchInput = document.getElementById("searchInput");
       const addArquitetoBtn = document.getElementById("addArquitetoBtn");
+      const addEscritorioBtn = document.getElementById("addEscritorioBtn");
       const arquitetoModal = document.getElementById("arquitetoModal");
+      const escritorioModal = document.getElementById("escritorioModal");
       const arquitetoForm = document.getElementById("arquitetoForm");
+      const escritorioForm = document.getElementById("escritorioForm");
       const cancelBtn = document.getElementById("cancelBtn");
+      const cancelEscritorioBtn = document.getElementById("cancelEscritorioBtn");
       const modalTitle = document.getElementById("modalTitle");
+      const modalEscritorioTitle = document.getElementById("modalEscritorioTitle");
+      const submitArquitetoBtn = document.getElementById("submitArquitetoBtn");
 
       let arquitetos = [];
       let arquitetosAgrupados = {};
       let editingArquitetoId = null;
 
-      // Definir a ordem de prioridade dos cargos
-      const cargoOrder = [
-        "Chefe",
-        "Gerente",
-        "Coordenador",
-        "Arquiteto Pleno",
-        "Arquiteto Júnior",
-        "Estagiário",
-      ];
+      // Debug: Verificar se os elementos foram encontrados
+      console.log('Elementos do DOM:', {
+        addEscritorioBtn: addEscritorioBtn,
+        escritorioModal: escritorioModal,
+        escritorioForm: escritorioForm,
+        cancelEscritorioBtn: cancelEscritorioBtn,
+        addArquitetoBtn: addArquitetoBtn,
+        arquitetoModal: arquitetoModal,
+        cancelBtn: cancelBtn,
+        submitArquitetoBtn: submitArquitetoBtn
+      });
 
-      // Função auxiliar para obter o índice de um cargo na ordem
-      function getCargoOrderIndex(cargo) {
-        const index = cargoOrder.indexOf(cargo);
-        return index === -1 ? Infinity : index; // Se o cargo não estiver na lista, ele vai para o final
+      // Função para formatar CEP
+      function formatarCEP(cep) {
+        cep = cep.replace(/\D/g, '');
+        if (cep.length > 5) {
+          cep = cep.substring(0, 5) + '-' + cep.substring(5, 8);
+        }
+        return cep;
       }
 
-      // Função para criar card de arquiteto
-      function createArquitetoCard(arquiteto) {
-        const card = document.createElement("div");
-        card.className = "arquiteto-card";
-        card.innerHTML = `
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">${arquiteto.nome}</h3>
-              <p class="card-escritorio">${arquiteto.escritorio}</p>
-              <p class="card-cargo">${arquiteto.cargo || "N/A"}</p>
-            </div>
-          </div>
-          <div class="card-details">
-            <div class="card-info">
-              <div class="info-item">
-                <span class="info-label">Nascimento</span>
-                <span class="info-value">${arquiteto.dia}/${
-          arquiteto.mes
-        }</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Contato</span>
-                <span class="info-value">${arquiteto.contato}</span>
-              </div>
-              <div class="info-item">
-                <span class="info-label">Escritório</span>
-                <span class="info-value">${arquiteto.escritorio}</span>
-              </div>
-              ${
-                arquiteto.observacao
-                  ? `
-              <div class="info-item">
-                <span class="info-label">Observação</span>
-                <span class="info-value">${arquiteto.observacao}</span>
-              </div>
-              `
-                  : ""
-              }
-            </div>
-            <div class="card-actions">
-              <button class="btn-primary edit-btn" data-id="${
-                arquiteto.id
-              }">Editar</button>
-              <button class="btn-secondary delete-btn" data-id="${
-                arquiteto.id
-              }">Excluir</button>
-            </div>
-          </div>
-        `;
+      // Função para formatar CNPJ
+      function formatarCNPJ(cnpj) {
+        cnpj = cnpj.replace(/\D/g, '');
+        if (cnpj.length > 12) {
+          cnpj = cnpj.substring(0, 12) + '-' + cnpj.substring(12, 14);
+        }
+        if (cnpj.length > 8) {
+          cnpj = cnpj.substring(0, 8) + '/' + cnpj.substring(8);
+        }
+        if (cnpj.length > 5) {
+          cnpj = cnpj.substring(0, 5) + '.' + cnpj.substring(5);
+        }
+        if (cnpj.length > 2) {
+          cnpj = cnpj.substring(0, 2) + '.' + cnpj.substring(2);
+        }
+        return cnpj;
+      }
 
-        // Adicionar evento de clique para expandir/recolher
-        card.addEventListener("click", (e) => {
-          if (
-            !e.target.classList.contains("edit-btn") &&
-            !e.target.classList.contains("delete-btn")
-          ) {
-            card.classList.toggle("expanded");
+      // Função para formatar CPF
+      function formatarCPF(cpf) {
+        cpf = cpf.replace(/\D/g, '');
+        if (cpf.length > 9) {
+          cpf = cpf.substring(0, 9) + '-' + cpf.substring(9, 11);
+        }
+        if (cpf.length > 6) {
+          cpf = cpf.substring(0, 6) + '.' + cpf.substring(6);
+        }
+        if (cpf.length > 3) {
+          cpf = cpf.substring(0, 3) + '.' + cpf.substring(3);
+        }
+        return cpf;
+      }
+
+      // Função para formatar telefone
+      function formatarTelefone(telefone) {
+        telefone = telefone.replace(/\D/g, '');
+        if (telefone.length > 10) {
+          telefone = telefone.substring(0, 10) + '-' + telefone.substring(10, 11);
+        }
+        if (telefone.length > 6) {
+          telefone = telefone.substring(0, 6) + '-' + telefone.substring(6);
+        }
+        if (telefone.length > 2) {
+          telefone = '(' + telefone.substring(0, 2) + ') ' + telefone.substring(2);
+        }
+        return telefone;
+      }
+
+      // Função para buscar CEP
+      async function buscarCEP(cep) {
+        try {
+          const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+          const data = await response.json();
+          
+          if (data.erro) {
+            throw new Error('CEP não encontrado');
+          }
+
+          document.getElementById('endereco').value = data.logradouro;
+          document.getElementById('bairro').value = data.bairro;
+          document.getElementById('cidade').value = data.localidade;
+          document.getElementById('estado').value = data.uf;
+          document.getElementById('numero').focus();
+        } catch (error) {
+          alert('Erro ao buscar CEP: ' + error.message);
+        }
+      }
+
+      // Função para buscar CEP do escritório
+      async function buscarCEPEscritorio(cep) {
+        try {
+          const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+          const data = await response.json();
+          
+          if (data.erro) {
+            throw new Error('CEP não encontrado');
+          }
+
+          document.getElementById('enderecoEscritorio').value = data.logradouro;
+          document.getElementById('bairroEscritorio').value = data.bairro;
+          document.getElementById('cidadeEscritorio').value = data.localidade;
+          document.getElementById('estadoEscritorio').value = data.uf;
+          document.getElementById('numeroEscritorio').focus();
+        } catch (error) {
+          alert('Erro ao buscar CEP: ' + error.message);
+        }
+      }
+
+      // Função para abrir o modal de escritório
+      function openEscritorioModal() {
+        console.log('Abrindo modal de escritório');
+        if (!escritorioModal) {
+          console.error('Modal de escritório não encontrado');
+          return;
+        }
+        escritorioForm.reset();
+        escritorioModal.style.display = "block";
+        if (arquitetoModal) arquitetoModal.style.display = "none"; // Assegurar que o modal de arquiteto está fechado
+      }
+
+      // Função para fechar o modal de escritório
+      function closeEscritorioModal() {
+        console.log('Fechando modal de escritório');
+        if (!escritorioModal) {
+          console.error('Modal de escritório não encontrado');
+          return;
+        }
+        escritorioModal.style.display = "none";
+        escritorioForm.reset();
+      }
+
+      // Função para abrir o modal de arquiteto
+      function openArquitetoModal() {
+        console.log('Abrindo modal de arquiteto');
+        if (!arquitetoModal) {
+          console.error('Modal de arquiteto não encontrado');
+          return;
+        }
+        arquitetoForm.reset();
+        arquitetoModal.style.display = "block";
+        if (escritorioModal) escritorioModal.style.display = "none"; // Assegurar que o modal de escritório está fechado
+      }
+
+      // Função para fechar o modal de arquiteto
+      function closeArquitetoModal() {
+        console.log('Fechando modal de arquiteto');
+        if (!arquitetoModal) {
+          console.error('Modal de arquiteto não encontrado');
+          return;
+        }
+        arquitetoModal.style.display = "none";
+        arquitetoForm.reset();
+      }
+
+      // Event Listeners para os botões do cabeçalho
+      if (addEscritorioBtn) {
+        addEscritorioBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          console.log('Botão "Adicionar Escritório" clicado');
+          openEscritorioModal();
+        });
+      } else {
+        console.error('Botão de adicionar escritório não encontrado');
+      }
+
+      if (addArquitetoBtn) {
+        addArquitetoBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          console.log('Botão "Adicionar" (Arquiteto) clicado');
+          openArquitetoModal();
+        });
+      } else {
+        console.error('Botão de adicionar arquiteto não encontrado');
+      }
+
+      // Event Listeners para os botões dentro dos modais
+      if (cancelEscritorioBtn) {
+        cancelEscritorioBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          console.log('Botão "Cancelar" (Escritório) clicado');
+          closeEscritorioModal();
+        });
+      }
+
+      if (cancelBtn) {
+        cancelBtn.addEventListener("click", (e) => {
+          e.preventDefault();
+          console.log('Botão "Cancelar" (Arquiteto) clicado');
+          closeArquitetoModal();
+        });
+      }
+
+      // Fechar modais ao clicar fora deles
+      window.addEventListener("click", (e) => {
+        if (e.target === escritorioModal) {
+          console.log('Clicou fora do modal de escritório');
+          closeEscritorioModal();
+        } else if (e.target === arquitetoModal) {
+          console.log('Clicou fora do modal de arquiteto');
+          closeArquitetoModal();
+        }
+      });
+
+      // Event listeners para formatação de campos e busca de CEP do modal de Escritório
+      const cnpjInputEscritorio = document.getElementById('cnpjEscritorio');
+      const cepInputEscritorio = document.getElementById('cepEscritorio');
+      const telefoneInputEscritorio = document.getElementById('telefoneEscritorio');
+      const buscarCepBtnEscritorio = document.getElementById('buscarCepEscritorio');
+
+      if (cnpjInputEscritorio) {
+        cnpjInputEscritorio.addEventListener('input', (e) => {
+          e.target.value = formatarCNPJ(e.target.value);
+        });
+      }
+
+      if (cepInputEscritorio) {
+        cepInputEscritorio.addEventListener('input', (e) => {
+          e.target.value = formatarCEP(e.target.value);
+        });
+      }
+
+      if (telefoneInputEscritorio) {
+        telefoneInputEscritorio.addEventListener('input', (e) => {
+          e.target.value = formatarTelefone(e.target.value);
+        });
+      }
+
+      if (buscarCepBtnEscritorio) {
+        buscarCepBtnEscritorio.addEventListener('click', () => {
+          const cep = cepInputEscritorio.value.replace(/\D/g, '');
+          if (cep.length === 8) {
+            buscarCEPEscritorio(cep);
+          } else {
+            alert('Por favor, insira um CEP válido');
           }
         });
-
-        // Adicionar eventos para os botões
-        card.querySelector(".edit-btn").addEventListener("click", (e) => {
-          e.stopPropagation();
-          editArquiteto(arquiteto);
-        });
-
-        card.querySelector(".delete-btn").addEventListener("click", (e) => {
-          e.stopPropagation();
-          deleteArquiteto(arquiteto.id);
-        });
-
-        return card;
       }
+
+      // Event listener para o formulário de escritório
+      if (escritorioForm) {
+        escritorioForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          console.log('Formulário de escritório submetido');
+          
+          // Validar CNPJ
+          const cnpj = cnpjInputEscritorio.value.replace(/\D/g, '');
+          if (cnpj.length !== 14) {
+            alert('Por favor, insira um CNPJ válido');
+            return;
+          }
+
+          const escritorio = {
+            nome: document.getElementById("nomeEscritorio").value,
+            nomeFantasia: document.getElementById("nomeFantasiaEscritorio").value,
+            cnpj: cnpjInputEscritorio.value,
+            cep: cepInputEscritorio.value,
+            endereco: document.getElementById("enderecoEscritorio").value,
+            numero: document.getElementById("numeroEscritorio").value,
+            complemento: document.getElementById("complementoEscritorio").value,
+            bairro: document.getElementById("bairroEscritorio").value,
+            cidade: document.getElementById("cidadeEscritorio").value,
+            estado: document.getElementById("estadoEscritorio").value,
+            telefone: telefoneInputEscritorio.value,
+            email: document.getElementById("emailEscritorio").value,
+            dataCadastro: new Date().toISOString()
+          };
+
+          try {
+            await addDoc(collection(db, "escritorios"), escritorio);
+            alert('Escritório cadastrado com sucesso!');
+            closeEscritorioModal();
+            loadEscritorios(); // Recarrega a lista de escritórios
+          } catch (error) {
+            console.error('Erro ao cadastrar escritório:', error);
+            alert('Erro ao cadastrar escritório: ' + error.message);
+          }
+        });
+      }
+
+      // Event listener para o formulário de arquiteto
+      if (arquitetoForm) {
+        arquitetoForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          console.log('Formulário de arquiteto submetido');
+          
+          // Validar CPF
+          const documento = document.getElementById("documento").value.replace(/\D/g, '');
+          if (documento.length !== 11) {
+            alert('Por favor, insira um CPF válido');
+            return;
+          }
+
+          const arquiteto = {
+            escritorioId: document.getElementById("escritorioSelect").value, // Adicionado
+            tipo: document.querySelector('input[name="tipo"]:checked').value,
+            nome: document.getElementById("nome").value,
+            documento: documento, // CPF
+            telefone: document.getElementById("telefone").value,
+            celular: document.getElementById("celular").value,
+            email: document.getElementById("email").value,
+            dataCadastro: new Date().toISOString()
+          };
+
+          if (editingArquitetoId) {
+            await updateDoc(doc(db, "arquitetos", editingArquitetoId), arquiteto);
+          } else {
+            await addDoc(collection(db, "arquitetos"), arquiteto);
+          }
+
+          alert('Cadastro de funcionário realizado com sucesso!');
+          closeArquitetoModal();
+          loadArquitetos();
+        });
+      }
+
+      // Função para validar CNPJ
+      function validarCNPJ(cnpj) {
+        cnpj = cnpj.replace(/[^\d]/g, '');
+        
+        if (cnpj.length !== 14) return false;
+        
+        // Verifica se todos os dígitos são iguais
+        if (/^(\d)\1+$/.test(cnpj)) return false;
+        
+        // Validação do primeiro dígito verificador
+        let soma = 0;
+        let peso = 5;
+        for (let i = 0; i < 12; i++) {
+          soma += parseInt(cnpj.charAt(i)) * peso;
+          peso = peso === 2 ? 9 : peso - 1;
+        }
+        let digito1 = 11 - (soma % 11);
+        if (digito1 > 9) digito1 = 0;
+        if (digito1 !== parseInt(cnpj.charAt(12))) return false;
+        
+        // Validação do segundo dígito verificador
+        soma = 0;
+        peso = 6;
+        for (let i = 0; i < 13; i++) {
+          soma += parseInt(cnpj.charAt(i)) * peso;
+          peso = peso === 2 ? 9 : peso - 1;
+        }
+        let digito2 = 11 - (soma % 11);
+        if (digito2 > 9) digito2 = 0;
+        if (digito2 !== parseInt(cnpj.charAt(13))) return false;
+        
+        return true;
+      }
+
+      // Adicionar validação de CNPJ ao digitar no formulário de escritório
+      document.getElementById('cnpjEscritorio').addEventListener('blur', (e) => {
+        const cnpj = e.target.value.replace(/\D/g, '');
+        if (cnpj.length === 14 && !validarCNPJ(cnpj)) {
+          alert('CNPJ inválido!');
+          e.target.value = '';
+        }
+      });
 
       // Função para carregar arquitetos
       async function loadArquitetos() {
@@ -301,90 +724,24 @@
         });
       }
 
-      // Função para adicionar arquiteto
-      async function addArquiteto(arquiteto) {
-        await addDoc(collection(db, "arquitetos"), arquiteto);
-        await loadArquitetos();
+      // Função para carregar escritórios existentes
+      async function loadEscritorios() {
+        const querySnapshot = await getDocs(collection(db, "escritorios"));
+        const select = document.getElementById('escritorioSelect');
+        select.innerHTML = '<option value="">Selecione um escritório...</option>';
+        
+        querySnapshot.docs.forEach(doc => {
+          const data = doc.data();
+          const option = document.createElement('option');
+          option.value = doc.id;
+          option.textContent = data.nome;
+          select.appendChild(option);
+        });
       }
 
-      // Função para editar arquiteto
-      async function editArquiteto(arquiteto) {
-        editingArquitetoId = arquiteto.id;
-        modalTitle.textContent = "Editar Arquiteto";
-
-        document.getElementById("nome").value = arquiteto.nome;
-        document.getElementById("dia").value = arquiteto.dia;
-        document.getElementById("mes").value = arquiteto.mes;
-        document.getElementById("contato").value = arquiteto.contato;
-        document.getElementById("escritorio").value = arquiteto.escritorio;
-        document.getElementById("cargo").value = arquiteto.cargo || "";
-        document.getElementById("observacao").value =
-          arquiteto.observacao || "";
-
-        arquitetoModal.style.display = "block";
-      }
-
-      // Função para atualizar arquiteto
-      async function updateArquiteto(id, arquiteto) {
-        await updateDoc(doc(db, "arquitetos", id), arquiteto);
-        await loadArquitetos();
-      }
-
-      // Função para excluir arquiteto
-      async function deleteArquiteto(id) {
-        if (confirm("Tem certeza que deseja excluir este arquiteto?")) {
-          await deleteDoc(doc(db, "arquitetos", id));
-          await loadArquitetos();
-        }
-      }
-
-      // Event Listeners
-      addArquitetoBtn.addEventListener("click", () => {
-        editingArquitetoId = null;
-        modalTitle.textContent = "Adicionar Arquiteto";
-        arquitetoForm.reset();
-        arquitetoModal.style.display = "block";
-      });
-
-      cancelBtn.addEventListener("click", () => {
-        arquitetoModal.style.display = "none";
-      });
-
-      arquitetoForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const arquiteto = {
-          nome: document.getElementById("nome").value,
-          dia: document.getElementById("dia").value,
-          mes: document.getElementById("mes").value,
-          contato: document.getElementById("contato").value,
-          escritorio: document.getElementById("escritorio").value,
-          cargo: document.getElementById("cargo").value,
-          observacao: document.getElementById("observacao").value,
-        };
-
-        if (editingArquitetoId) {
-          await updateArquiteto(editingArquitetoId, arquiteto);
-        } else {
-          await addArquiteto(arquiteto);
-        }
-
-        arquitetoModal.style.display = "none";
-      });
-
-      searchInput.addEventListener("input", (e) => {
-        const searchTerm = e.target.value.toLowerCase();
-        const filteredArquitetos = arquitetos.filter(
-          (arquiteto) =>
-            arquiteto.nome.toLowerCase().includes(searchTerm) ||
-            arquiteto.escritorio.toLowerCase().includes(searchTerm) ||
-            arquiteto.contato.toLowerCase().includes(searchTerm) ||
-            arquiteto.cargo.toLowerCase().includes(searchTerm)
-        );
-        renderArquitetos(filteredArquitetos);
-      });
-
-      // Carregar arquitetos ao iniciar
+      // Função para carregar arquitetos ao iniciar
       loadArquitetos();
+      loadEscritorios(); // Carregar escritórios ao iniciar para popular o seletor
     </script>
   </body>
 </html>

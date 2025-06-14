@@ -100,9 +100,11 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 1px solid #eee;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
@@ -288,17 +290,15 @@ tr:not(.escritorio-header):hover {
 }
 
 .modal-content {
-  background-color: white;
+  position: relative;
+  background-color: #fff;
   margin: 5% auto;
-  padding: 20px;
-  width: 90%;
-  max-width: 500px;
+  padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
+  max-width: 600px;
   max-height: 90vh;
-  justify-content: space-between;
+  overflow-y: auto;
 }
 
 .modal-content h2 {
@@ -460,7 +460,155 @@ tr:not(.escritorio-header):hover {
   max-height: 500px;
 }
 
-/* Responsividade */
+/* Estilos para navegação por abas */
+.tabs-navigation {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1rem;
+}
+
+.tab-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #666;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.tab-btn.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.tab-content {
+  padding: 1rem;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+/* Estilos para o formulário em etapas */
+.modal-steps {
+  margin-bottom: 2rem;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.step {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #666;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.step.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.step-line {
+  width: 100px;
+  height: 2px;
+  background-color: #e0e0e0;
+}
+
+.form-step {
+  display: none;
+}
+
+.form-step.active {
+  display: block;
+}
+
+.radio-group {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.radio-group input[type="radio"] {
+  width: auto;
+  margin: 0;
+}
+
+.input-group input.error {
+  border-color: #f44336;
+}
+
+/* Ajustes para o modal com mais campos */
+.modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#arquitetoForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.modal-buttons {
+  margin-top: 2rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+/* Estilos para campos de endereço */
+.cep-container {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.cep-container input {
+  flex: 1;
+}
+
+.cep-container button {
+  white-space: nowrap;
+}
+
+input[readonly] {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Ajuste para campos de endereço em dispositivos móveis */
 @media (max-width: 768px) {
   .login-container {
     padding: 20px;
@@ -584,5 +732,171 @@ tr:not(.escritorio-header):hover {
 
   .info-value {
     font-size: 14px;
+  }
+
+  /* Responsividade para as abas */
+  .tabs-navigation {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .tab-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .cep-container {
+    flex-direction: column;
+  }
+
+  .cep-container button {
+    width: 100%;
+  }
+
+  /* Estilos para o seletor de escritório */
+  #escritorioSelect {
+    font-size: 14px;
+  }
+}
+
+/* Estilos para o seletor de escritório */
+#escritorioSelect {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: white;
+  transition: border-color 0.3s;
+}
+
+#escritorioSelect:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+#escritorioSelect option {
+  padding: 8px;
+}
+
+/* Estilos para campos condicionais */
+#novoCadastroFields,
+#escritorioExistenteFields {
+  transition: all 0.3s ease;
+}
+
+/* Estilos para o seletor com busca */
+.select-with-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.select-with-search input {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.select-with-search select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 16px;
+  background-color: white;
+  transition: border-color 0.3s;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.select-with-search select:focus {
+  border-color: #4caf50;
+  outline: none;
+}
+
+.select-with-search select option {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.select-with-search select option:hover {
+  background-color: #f5f5f5;
+}
+
+.select-with-search select option:checked {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Ajustes para dispositivos móveis */
+@media (max-width: 768px) {
+  .select-with-search select {
+    font-size: 14px;
+  }
+}
+
+/* Estilos para o cabeçalho */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Estilos para o modal de escritório */
+#escritorioModal .modal-content {
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#escritorioModal .input-group {
+  margin-bottom: 1rem;
+}
+
+#escritorioModal .cep-container {
+  display: flex;
+  gap: 0.5rem;
+}
+
+#escritorioModal .cep-container input {
+  flex: 1;
+}
+
+#escritorioModal .cep-container button {
+  white-space: nowrap;
+}
+
+/* Ajustes responsivos */
+@media (max-width: 768px) {
+  header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .header-buttons {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .modal-content {
+    width: 95%;
+    margin: 1rem;
+    padding: 1rem;
+  }
+
+  #escritorioModal .modal-content {
+    width: 95%;
+    margin: 1rem;
   }
 }
